@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.md.mapper.GitAddressMapper">
+
+    <resultMap type="GitAddress" id="GitAddressResult">
+        <result property="gitAddressId"    column="git_address_id"    />
+        <result property="gitAddress"    column="git_address"    />
+    </resultMap>
+
+    <sql id="selectGitAddressVo">
+        select git_address_id, git_address from git_address
+    </sql>
+
+    <select id="selectGitAddressList" parameterType="GitAddress" resultMap="GitAddressResult">
+        <include refid="selectGitAddressVo"/>
+        <where>
+            <if test="gitAddress != null  and gitAddress != ''"> and git_address = #{gitAddress}</if>
+        </where>
+    </select>
+
+    <select id="selectGitAddressById" parameterType="Long" resultMap="GitAddressResult">
+        <include refid="selectGitAddressVo"/>
+        where git_address_id = #{gitAddressId}
+    </select>
+
+    <insert id="insertGitAddress" parameterType="GitAddress">
+        insert into git_address
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gitAddressId != null">git_address_id,</if>
+            <if test="gitAddress != null">git_address,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="gitAddressId != null">#{gitAddressId},</if>
+            <if test="gitAddress != null">#{gitAddress},</if>
+        </trim>
+    </insert>
+
+    <update id="updateGitAddress" parameterType="GitAddress">
+        update git_address
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="gitAddress != null">git_address = #{gitAddress},</if>
+        </trim>
+        where git_address_id = #{gitAddressId}
+    </update>
+
+    <delete id="deleteGitAddressById" parameterType="Long">
+        delete from git_address where git_address_id = #{gitAddressId}
+    </delete>
+
+    <delete id="deleteGitAddressByIds" parameterType="String">
+        delete from git_address where git_address_id in
+        <foreach item="gitAddressId" collection="array" open="(" separator="," close=")">
+            #{gitAddressId}
+        </foreach>
+    </delete>
+
+</mapper>
